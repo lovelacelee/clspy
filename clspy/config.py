@@ -7,6 +7,7 @@ import configparser
 import traceback
 from enum import Enum
 from xml.etree import ElementTree as ET
+from .singleton import SingletonMetaclass
 
 try:
     '''pyyaml package is required'''
@@ -161,3 +162,11 @@ class Config(object):
         except Exception as e:
             # print(e)
             pass
+
+class ConfigUnique(Config, metaclass=SingletonMetaclass):
+    """Globally unique Config object
+
+    Args:
+        metaclass: Defaults to SingletonMetaclass.
+    """
+    pass
