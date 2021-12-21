@@ -1,0 +1,3 @@
+include *.txt AUTHORS ChangeLog.md *.conf *.html
+recursive-include clspy *.txt *.py *.conf *.html
+prune pytest
