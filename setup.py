@@ -84,7 +84,6 @@ class PublishCommand(Command):
         # python setup.py publish --help
         # python setup.py publish -r/-l
         ("release", 'r', "Publish to pypi.org"),
-        ("lovelacelee", 'l', "Publish to pypi.lovelacelee.com"),
     ]
 
     def initialize_options(self):
@@ -98,9 +97,6 @@ class PublishCommand(Command):
         if self.release:
             print("V%s will publish to the https://upload.pypi.org/legacy/" %
                   version)
-        if self.lovelacelee:
-            print("V%s will publish to the https://pypi.lovelacelee.com/" %
-                  version)
 
     def run(self):
         workdir = os.path.dirname(os.path.abspath(__file__))
@@ -113,16 +109,6 @@ class PublishCommand(Command):
         try:
             if self.release:
                 os.system("twine upload dist/*")
-        except Exception as e:
-            print(e)
-
-        try:
-            if self.lovelacelee:
-                # use .pypirc
-                #os.system("twine upload -r lovelacelee dist/*")
-                os.system(
-                    "twine upload --verbose --username lovelacelee --repository-url https://pypi.lovelacelee.com/ dist/*"
-                )
         except Exception as e:
             print(e)
 
@@ -172,7 +158,7 @@ setup(
     # setup_requires or tests_require packages
     # will be written into metadata of *.egg
     dependency_links=[
-        # "https://pypi.lovelacelee.com/clspy-1.1.0.tar.gz",
+        # "clspy-1.1.0.tar.gz",
     ],
     classifiers=[
         #   3 - Alpha

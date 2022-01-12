@@ -8,7 +8,6 @@ that are gradually generated during the python learning process.
 # [ChangeLog](ChangeLog.md)
 
 * Only support `python3`
-* Posted private [pypi server](https://pypi.lovelacelee.com/)
 
 # How-To
 
