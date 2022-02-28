@@ -5,3 +5,4 @@ alive-progress
 sqlalchemy
 requests
 loguru
+pyyaml

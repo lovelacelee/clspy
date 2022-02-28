@@ -6,7 +6,6 @@ from logging import critical, handlers, info
 from .singleton import SingletonClass
 from .utils import mkdir_p
 
-
 class Logger(SingletonClass):
     """Gloable logging wrapper
 

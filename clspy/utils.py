@@ -11,9 +11,9 @@ from .crypto import Md5
 
 def mkdir_p(absolute_path):
     """mkdir -p implement
-    
-    Usage: 
-    
+
+    Usage:
+
     mkdir_p('D:\\A\\B\\C.txt')
 
     mkdir_p('~/A/B/C')
@@ -61,7 +61,7 @@ def win_runtime_cp(src, to):
     # useful while running a package by pyinstaller on windows
     if platform.system() == "Windows":
         for path in sys.path:
-            if re.match(r'^_MEI\d+$', os.path.basename(path)):
+            if re.match(r"^_MEI\d+$", os.path.basename(path)):
                 if os.path.exists(path):
                     dir_copy(src, to)
                     break
@@ -70,6 +70,14 @@ def win_runtime_cp(src, to):
 def is_frozen():
     # All of the modules are built-in to the interpreter, e.g., by py2exe
     return hasattr(sys, "frozen")
+
+
+def runpath(file=__file__):
+    if is_frozen():
+        return os.getcwd()
+    else:
+        cwd = os.path.realpath(file)
+        return os.path.dirname(cwd)
 
 
 def pipguess():
@@ -91,25 +99,26 @@ def setenv(permanent=True, key=None, value=None):
         if systype == "Windows":
             os.system(r"setx %s %s /m" % (key, value))
         else:
-            os.environ['%s' % key] = value
+            os.environ["%s" % key] = value
     else:
-        os.environ['%s' % key] = value
+        os.environ["%s" % key] = value
 
 
 def pip_conf_install(src=None):
     try:
         if not src or not os.path.exists(src):
-            src = os.path.join(os.path.dirname(__file__), 'pip.conf')
+            src = os.path.join(os.path.dirname(__file__), "pip.conf")
         systype = platform.system()
         if systype == "Windows":
-            pipdotdir = os.path.join(os.getenv('APPDATA'), "pip")
+            pipdotdir = os.path.join(os.getenv("APPDATA"), "pip")
             pip_dest = os.path.join(pipdotdir, "pip.ini")
         elif systype == "Darwin":
-            pipdotdir = os.path.join(os.getenv('HOME'),
-                                     "/Library/Application\ Support/pip/pip")
+            pipdotdir = os.path.join(
+                os.getenv("HOME"), "/Library/Application\ Support/pip/pip"
+            )
             pip_dest = os.path.join(pipdotdir, "pip.conf")
         else:
-            pipdotdir = os.path.join(os.getenv('HOME'), ".pip")
+            pipdotdir = os.path.join(os.getenv("HOME"), ".pip")
             pip_dest = os.path.join(pipdotdir, "pip.conf")
         mkdir_p(pipdotdir)
         md5 = Md5()

@@ -9,16 +9,23 @@ from enum import Enum
 from xml.etree import ElementTree as ET
 from .singleton import SingletonMetaclass
 
+from .log import Logger
+
+clslog = Logger().log
+
 try:
-    '''pyyaml package is required'''
+    """pyyaml package is required"""
     import yaml
 except Exception as e:
-    traceback.format_exc()
+    # traceback.format_exc()
+    clslog.critical(
+        "pyyaml is not installed! clspy does not work anymore without yaml."
+    )
 
 
 class ConfigType(Enum):
-    """Support types: Json, Yaml, Ini, Xml
-    """
+    """Support types: Json, Yaml, Ini, Xml"""
+
     CCJson = 1
     CCYaml = 2
     CCIni = 3
@@ -28,7 +35,7 @@ class ConfigType(Enum):
 class Config(object):
     """Config is a config manager
 
-    Aim to support json/xml/ini/yaml parse and dump operations. 
+    Aim to support json/xml/ini/yaml parse and dump operations.
 
     Object can be easily used ad python dict type.
 
@@ -41,11 +48,12 @@ class Config(object):
     Yaml: object managed as dict
 
     """
+
     _filepath = None
     _execpath = None
     _config = None
     _type = ConfigType.CCJson
-    '''Only valid as xml config'''
+    """Only valid as xml config"""
     _tree = None
 
     def __init__(self, file="config.json") -> None:
@@ -56,21 +64,22 @@ class Config(object):
         self.load(file)
 
     def __repr__(self) -> str:
-        return '<Config[{} @{}@{}] {}>'.format(self._type, self._filepath,
-                                               self._execpath, self._config)
+        return "<Config[{} @{}@{}] {}>".format(
+            self._type, self._filepath, self._execpath, self._config
+        )
 
     def _guess_suffix(self, file):
         try:
             suffix = os.path.splitext(file)[-1]
         except:
             pass
-        if suffix == '.json':
+        if suffix == ".json":
             return ConfigType.CCJson
-        elif suffix == '.yaml':
+        elif suffix == ".yaml":
             return ConfigType.CCYaml
-        elif suffix == '.ini':
+        elif suffix == ".ini":
             return ConfigType.CCIni
-        elif suffix == '.xml':
+        elif suffix == ".xml":
             return ConfigType.CCXml
         else:
             return None
@@ -88,13 +97,15 @@ class Config(object):
             if self._type == ConfigType.CCXml:
                 if key:
                     return self._config.find(key)
-            elif self._type == ConfigType.CCJson or \
-                    self._type == ConfigType.CCIni or \
-                    self._type == ConfigType.CCYaml:
+            elif (
+                self._type == ConfigType.CCJson
+                or self._type == ConfigType.CCIni
+                or self._type == ConfigType.CCYaml
+            ):
                 return self._config[key]
             return self._config
         except Exception as e:
-            # print("Config get '{}' failed[{}]".format(key, e))
+            clslog.critical("Config get '{}' failed[{}]".format(key, e))
             # traceback.print_exc()
             pass
 
@@ -116,7 +127,7 @@ class Config(object):
                 self._tree = ET.parse(file)
                 self._config = self._tree.getroot()
             else:
-                with open(file, 'r', encoding="utf-8") as fp:
+                with open(file, "r", encoding="utf-8") as fp:
                     if self._type == ConfigType.CCJson:
                         self._config = json.load(fp)
                     elif self._type == ConfigType.CCYaml:
@@ -125,7 +136,7 @@ class Config(object):
                     else:
                         raise Exception.args("Not supported")
         except Exception as e:
-            # print(e)
+            clslog.critical(e)
             pass
         finally:
             # print(self._config)
@@ -150,9 +161,9 @@ class Config(object):
             if self._type == ConfigType.CCIni:
                 self._config.write(file)
             elif self._type == ConfigType.CCXml:
-                self._tree.write(file, encoding='utf-8', xml_declaration=True)
+                self._tree.write(file, encoding="utf-8", xml_declaration=True)
             else:
-                with open(file, 'r', encoding="utf-8") as fp:
+                with open(file, "r", encoding="utf-8") as fp:
                     if self._type == ConfigType.CCJson:
                         json.dump(self._config, fp, indent=4)
                     elif self._type == ConfigType.CCYaml:
@@ -160,8 +171,9 @@ class Config(object):
                     else:
                         raise Exception.args("Not supported")
         except Exception as e:
-            # print(e)
+            clslog.critical(e)
             pass
+
 
 class ConfigUnique(Config, metaclass=SingletonMetaclass):
     """Globally unique Config object
@@ -169,4 +181,5 @@ class ConfigUnique(Config, metaclass=SingletonMetaclass):
     Args:
         metaclass: Defaults to SingletonMetaclass.
     """
+
     pass
