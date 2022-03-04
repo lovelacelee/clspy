@@ -163,9 +163,9 @@ class Config(object):
             elif self._type == ConfigType.CCXml:
                 self._tree.write(file, encoding="utf-8", xml_declaration=True)
             else:
-                with open(file, "r", encoding="utf-8") as fp:
+                with open(file, "w", encoding="utf-8") as fp:
                     if self._type == ConfigType.CCJson:
-                        json.dump(self._config, fp, indent=4)
+                        json.dump(self._config, fp, indent=4, ensure_ascii=False)
                     elif self._type == ConfigType.CCYaml:
                         yaml.dump(self._config, file)
                     else:
